@@ -8,13 +8,13 @@ import {
 } from 'react-bootstrap';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_ME } from '../utils/queries';
-import { REMOVE_BOOK } from '../utils/mutations';
+import { DELETE_BOOK } from '../utils/mutations';
 
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
-  const [removeBook] = useMutation(REMOVE_BOOK);
+  const [removeBook] = useMutation(DELETE_BOOK);
 
   const { loading, error, data } = useQuery(GET_ME);
   const userData = data?.me || {};
