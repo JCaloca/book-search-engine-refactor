@@ -44,10 +44,7 @@ function App() {
           <Routes>
             <Route exact path="/" element={SearchBooks} />
             <Route exact path="/saved" element={SavedBooks} />
-            <Route
-              path="*"
-              element={<h1 className="display-2">Wrong page!</h1>}
-            />
+            <Route render={<h1 className="display-2">Wrong page!</h1>} />
           </Routes>
         </>
       </Router>
