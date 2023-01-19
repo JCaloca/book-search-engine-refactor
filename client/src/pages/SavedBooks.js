@@ -8,15 +8,19 @@ import {
 } from 'react-bootstrap';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_ME } from '../utils/queries';
-import { DELETE_BOOK } from '../utils/mutations';
+import { REMOVE_BOOK } from '../utils/mutations';
 
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
   const { loading, data } = useQuery(GET_ME);
+  const [removeBook] = useMutation(REMOVE_BOOK);
   const userData = data?.me || {};
-  const [removeBook] = useMutation(DELETE_BOOK);
+
+  if (!userData?.username) {
+    return <h4>You must be logged in to search!</h4>;
+  }
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
@@ -25,10 +29,10 @@ const SavedBooks = () => {
     if (!token) {
       return false;
     }
-    try {
-      const { user } = await removeBook({ variables: { bookId: bookId } });
 
-      userData = user;
+    try {
+      await removeBook({ variables: { bookId: bookId } });
+
       removeBookId(bookId);
     } catch (err) {
       console.error(err);
