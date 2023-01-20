@@ -7,10 +7,10 @@ import Auth from '../utils/auth';
 
 const LoginForm = () => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
-
-  const [login] = useMutation(LOGIN_USER);
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+
+  const [loginUser] = useMutation(LOGIN_USER);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -28,13 +28,12 @@ const LoginForm = () => {
     }
 
     try {
-      const { response } = await login({ variables: { ...userFormData } });
+      const { data } = await loginUser({ variables: { ...userFormData } });
 
-      console.log(response);
-
-      Auth.login(response.login.token);
+      Auth.login(data.loginUser.token);
     } catch (err) {
       console.error(err);
+      setShowAlert(true);
     }
 
     setUserFormData({

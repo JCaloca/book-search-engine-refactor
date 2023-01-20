@@ -18,24 +18,28 @@ const resolvers = {
 
   Mutation: {
     // Create a new user
-    addUser: async (parent, args) => {
+    addUser: async (parent, { username, email, password }) => {
       // args: username, email, password to create user's login info
-      const user = await user.create(args);
+      const user = await User.create({ username, email, password });
+
+      if (!user) {
+        throw new AuthenticationError('Something went wrong!');
+      }
       // sign JWT with user's info and return
       const token = signToken(user);
       return { token, user };
     },
     // Find a user by their email
-    login: async (parent, { email, password }) => {
+    loginUser: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
       // if not the correct email address throw error
       if (!user) {
         throw new AuthenticationError('Incorrect credentials');
       }
       // check to see if password matches db password
-      const correctPW = await user.isCorrectPassword(password);
+      const correctPw = await user.isCorrectPassword(password);
       // if not correct password throw error
-      if (!correctPW) {
+      if (!correctPw) {
         throw new AuthenticationError('Incorrect credentials');
       }
 
