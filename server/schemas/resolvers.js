@@ -7,10 +7,7 @@ const resolvers = {
     me: async (parent, args, context) => {
       // if request context has a valid user object return userData
       if (context.user) {
-        const userData = await User.findOne({ _id: context.user._id }).select(
-          '-_v -password'
-        );
-        return userData;
+        return User.findOne({ _id: context.user._id }).select('-_v -password');
       }
       throw new AuthenticationError('You need to be logged in!');
     },
@@ -47,14 +44,13 @@ const resolvers = {
 
       return { token, user };
     },
-    saveBook: async (parent, { book }, context) => {
+    saveBook: async (parent, { input }, context) => {
       if (context.user) {
-        const updatedUser = await User.findOneAndUpdate(
+        return User.findOneAndUpdate(
           { _id: context.user._id },
-          { $addToSet: { savedBooks: book } },
+          { $addToSet: { savedBooks: input } },
           { new: true }
         );
-        return updatedUser;
       }
       throw new AuthenticationError('You need to be logged in!');
     },
